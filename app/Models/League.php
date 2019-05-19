@@ -8,7 +8,7 @@ class League extends Model
 {
     public function team()
     {
-        return $this->hasMany(Team::class);
+        return $this->hasOne(Team::class, 'id', 'team_id');
     }
 
     public function matches()

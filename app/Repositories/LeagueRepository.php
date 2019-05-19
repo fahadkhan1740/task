@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\League;
 use App\Models\Match;
 
 class LeagueRepository
@@ -71,5 +72,26 @@ class LeagueRepository
         $match->status = 'Will Start';
         $match->result = 'Match has not started yet';
         $match->save();
+    }
+
+    /**
+     * Set League standings in League table
+     * @param $teams
+     */
+    public function resetStandings($teams)
+    {
+        League::truncate();
+
+        array_map(function ($team) {
+            $league = new League();
+            $league->team_id = $team['id'];
+            $league->standing_id = $team['id'];
+            $league->matches_played = 0;
+            $league->wins = 0;
+            $league->lose = 0;
+            $league->points = 0;
+            $league->form = '';
+            $league->save();
+        }, $teams);
     }
 }

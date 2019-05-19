@@ -29,6 +29,9 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="col-md-3">
+                    <button class="btn btn-warning" @click="startMatch(match.id)">Start Match</button>
+                </div>
             <p>Result: {{ match.result ? match.result : 'Match has not started'}}</p>
             </div>
         </div>
@@ -50,15 +53,16 @@
         methods: {
             resetFixtures() {
                 axios.get('api/league/create').then(res => {
-                    console.log(res.data);
                     this.getAllMatches();
                 }).catch(error => console.error(error))
             },
             getAllMatches() {
                 axios.get('api/match').then(res => {
-                    console.log(res)
                     this.matches = res.data
                 }).catch(error => console.error(error))
+            },
+            startMatch(matchId) {
+                axios.get(`api/match/create?match_id=${matchId}`).then(res => console.log(res)).error(console.error(error))
             }
         }
     }

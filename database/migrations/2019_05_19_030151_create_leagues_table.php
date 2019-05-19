@@ -16,6 +16,7 @@ class CreateLeaguesTable extends Migration
         Schema::create('leagues', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedInteger('team_id');
+            $table->unsignedInteger('standing_id');
             $table->integer('matches_played');
             $table->integer('wins');
             $table->integer('lose');
