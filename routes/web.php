@@ -23,3 +23,5 @@ Route::get('rest', function () {
     $team = \App\Models\Team::with('players')->first();
     return $team;
 });
+
+Route::get('league', 'LeagueController@create');
