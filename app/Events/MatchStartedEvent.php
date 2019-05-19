@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Models\League;
+use App\Models\Match;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
@@ -11,13 +12,13 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class MatchStarted
+class MatchStartedEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     /**
      * @var Match
      */
-    private $match;
+    public $match;
 
     /**
      * Create a new event instance.

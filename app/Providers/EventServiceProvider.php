@@ -2,8 +2,9 @@
 
 namespace App\Providers;
 
-use App\Events\MatchStarted;
+use App\Events\MatchStartedEvent;
 use App\Listeners\UpdateLeagueStanding;
+use App\Listeners\UpdateLeagueStandingListener;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -20,8 +21,8 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        MatchStarted::class => [
-            UpdateLeagueStanding::class
+        MatchStartedEvent::class => [
+            UpdateLeagueStandingListener::class
         ]
     ];
 

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\MatchStarted;
+use App\Events\MatchStartedEvent;
 use App\Models\Match;
 use App\Repositories\MatchRepository;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -47,7 +47,7 @@ class MatchController extends Controller
 
         // Increment League table with matches played || Event: Match started
         // 1 - Listener: increase matches played
-        event(new MatchStarted($match));
+        event(new MatchStartedEvent($match));
 
         // 2 - Listener: starts the game
 
