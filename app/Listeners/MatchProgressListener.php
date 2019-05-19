@@ -45,14 +45,14 @@ class MatchProgressListener
         $this->match = Match::find($event->match->id);
 
         $homeTeam = Team::with('players.scorecard')
-                    ->with('league')
-                    ->with('league.matches')
-                    ->find($event->match->home_team_id);
+            ->with('league')
+            ->with('league.matches')
+            ->find($event->match->home_team_id);
 
         $awayTeam = Team::with('players.scorecard')
-                    ->with('league')
-                    ->with('league.matches')
-                    ->find($event->match->away_team_id);
+            ->with('league')
+            ->with('league.matches')
+            ->find($event->match->away_team_id);
 
 
         $this->isHomeMatch = true;
@@ -166,13 +166,9 @@ class MatchProgressListener
     private function isExtras(array $probableBalls, $ball): void
     {
         if ($this->isNoBall($probableBalls, $ball)) {
-            // updated bowler "No balls"
             $this->updateRuns(1, 'No Ball');
-
         } else {
             $this->updateRuns(1, 'Wide Ball');
-
-            // update bowler "Wide balls"
         }
     }
 
@@ -184,18 +180,11 @@ class MatchProgressListener
     private function isExtrasOrWicket(array $probableBalls, $ball)
     {
         if ($this->isNoOrWideBall($probableBalls, $ball)) {
-//                        $probableRuns = 1;
-            // update batting team runs
             $this->isExtras($probableBalls, $ball);
             $this->isDelivery = false;
             return false;
         } else {
             $this->updateRuns(0, $ball);
-//                        $probableRuns = 0;
-            // Remove current batsman
-            // Bring new batsman
-            // update batsman status
-            // update bowler wickets
             $this->isDelivery = true;
             return true;
         }
@@ -253,7 +242,7 @@ class MatchProgressListener
      */
     private function updateBatsmanScorecard($runs): void
     {
-        Log::debug('batting runs '. $runs);
+        Log::debug('batting runs ' . $runs);
         $this->batsmanOnStrike->scorecard->batting_runs += $runs;
         $this->batsmanOnStrike->scorecard->batting_balls++;
 
@@ -312,6 +301,10 @@ class MatchProgressListener
         $this->currentBowler->scorecard->update();
     }
 
+    /**
+     * Update bowler for next over
+     * @param $over
+     */
     private function updateBowler($over)
     {
         if ($over % 4 === 0) {
@@ -323,10 +316,13 @@ class MatchProgressListener
         }
     }
 
+    /**
+     * Update Team runs in matches
+     * @param $runs
+     * @param string $type
+     */
     private function updateTeamRuns($runs, string $type)
     {
-        Log::debug($this->over);
-
         if ($this->isHomeMatch) {
             if ($this->over === env('OVERS')) {
                 return;
@@ -334,7 +330,6 @@ class MatchProgressListener
 
             if ($runs > 0) {
                 $this->match->home_team_runs += $runs;
-                \Log::info("Runs". $runs ." Home team runs ". $this->match->home_team_runs);
             }
 
             if ($this->over === 0) {
@@ -351,7 +346,6 @@ class MatchProgressListener
 
             if ($runs > 0) {
                 $this->match->away_team_runs += $runs;
-                \Log::info("Runs". $runs ." Home team runs ". $this->match->away_team_runs);
             }
 
             if ($this->over === 0) {
@@ -366,8 +360,13 @@ class MatchProgressListener
         $this->match->update();
     }
 
+    /**
+     * Declare final match result
+     */
     private function declareMatchResult()
     {
+        $this->match->status = 'Commenced';
+
         if ($this->match->home_team_runs > $this->match->away_team_runs) {
             $title = $this->match->homeTeam->title;
             $this->match->result = "$title won.";
