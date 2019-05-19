@@ -52,6 +52,7 @@ class MatchProgressListener
                 if ($this->isNotDelivery($probableBalls, $ball)) {
                     if ($this->isNoOrWideBall($probableBalls, $ball)) {
                         $probableRuns = 1;
+                        // update batting team runs
                         if ($this->isNoBall($probableBalls, $ball)) {
                             // updated bowler "No balls"
                         } else {
