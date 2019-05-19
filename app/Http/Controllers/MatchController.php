@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MatchStarted;
 use App\Models\Match;
 use App\Repositories\MatchRepository;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -43,6 +44,12 @@ class MatchController extends Controller
         $match = Match::find(request()->match_id);
 
         $this->matchRepository->startMatch($match);
+
+        // Increment League table with matches played || Event: Match started
+        // 1 - Listener: increase matches played
+        event(new MatchStarted($match));
+
+        // 2 - Listener: starts the game
 
         return response('Match started successfully', 200);
     }
