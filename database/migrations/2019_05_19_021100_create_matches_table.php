@@ -27,6 +27,8 @@ class CreateMatchesTable extends Migration
             $table->unsignedInteger('away_team_run_rate');
             $table->string('status');
             $table->string('result');
+            $table->timestamp('started_at');
+            $table->timestamp('ended_at');
             $table->timestamps();
         });
     }
