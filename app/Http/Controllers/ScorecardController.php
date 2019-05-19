@@ -9,6 +9,6 @@ class ScorecardController extends Controller
 {
     public function getScorecard($matchId)
     {
-        return Scorecard::where('match_id', $matchId)->first();
+        return Scorecard::with('player')->where('match_id', $matchId)->get();
     }
 }

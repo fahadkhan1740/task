@@ -22,6 +22,7 @@ window.Vue = require('vue');
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('matches-component', require('./components/MatchesComponent').default);
 Vue.component('standings-component', require('./components/StandingsComponent').default);
+Vue.component('scorecard-component', require('./components/ScorecardComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

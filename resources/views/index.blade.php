@@ -23,10 +23,18 @@
             <div role="tabpanel" class="tab-pane fade" id="matches">
                 <matches-component></matches-component>
             </div>
-            <div role="tabpanel" class="tab-pane fade" id="references">ccc</div>
+            <div role="tabpanel" class="tab-pane fade" id="references">
+                <scorecard-component></scorecard-component>
+            </div>
         </div>
     </div>
 
 {{--<matches-component></matches-component>--}}
 
 @endsection()
+<script>
+    import ScorecardComponent from "../js/components/ScorecardComponent";
+    export default {
+        components: {ScorecardComponent}
+    }
+</script>

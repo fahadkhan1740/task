@@ -6,6 +6,7 @@ use App\Events\MatchStartedEvent;
 use App\Models\Team;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class MatchProgressListener
 {
@@ -49,9 +50,12 @@ class MatchProgressListener
             for ($j = 1; $j = 6;) {
                 $ball = array_rand($probableBalls, 1);
 
+                Log::debug('first ball');
                 if ($this->isNotDelivery($probableBalls, $ball)) {
+                    Log::debug('is not delivery');
+                    Log::debug($probableRuns);
                     if ($this->isNoOrWideBall($probableBalls, $ball)) {
-                        $probableRuns = 1;
+//                        $probableRuns = 1;
                         // update batting team runs
                         if ($this->isNoBall($probableBalls, $ball)) {
                             // updated bowler "No balls"
@@ -59,13 +63,16 @@ class MatchProgressListener
                             // update bowler "Wide balls"
                         }
                     } else {
-                        $probableRuns = 0;
+//                        $probableRuns = 0;
                         // Remove current batsman
                         // Bring new batsman
                         // update batsman status
                         // update bowler wickets
                     }
                 } else {
+                    Log::debug('is delivery');
+                    Log::debug($probableRuns);
+//                    dd($probableRuns);
                     $run = array_rand($probableRuns, 1);
 
                     if ($probableRuns[$run] !== 0) {
