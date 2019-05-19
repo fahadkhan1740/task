@@ -28,9 +28,12 @@ class LeagueController extends Controller
      */
     public function create()
     {
-        // get all teams
         $teams = Team::all()->toArray();
-        // arrange a round robin format in matches table
+
+        // Remove previous fixtures if present
+        $this->leagueRepository->resetFixtures();
+
+        // Arrange fixtures
         $this->leagueRepository->setFixtures($teams);
 
         return response('Fixtures created successfully', 200);

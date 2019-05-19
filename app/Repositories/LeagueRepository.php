@@ -7,6 +7,15 @@ use App\Models\Match;
 class LeagueRepository
 {
     /**
+     * Remove all the matches to generate a new league fixtures
+     * @return mixed
+     */
+    public function resetFixtures()
+    {
+        return Match::truncate();
+    }
+
+    /**
      * Set fixtures for all Teams in a League
      * @param $teams
      * @return mixed
@@ -50,7 +59,17 @@ class LeagueRepository
     {
         $match = new Match();
         $match->home_team_id = $home[$j]['id'];
+        $match->home_team_runs = 0;
+        $match->home_team_wickets = 0;
+        $match->home_team_overs = 0;
+        $match->home_team_run_rate = 0;
         $match->away_team_id = $away[$j]['id'];
+        $match->away_team_runs = 0;
+        $match->away_team_wickets = 0;
+        $match->away_team_overs = 0;
+        $match->away_team_run_rate = 0;
+        $match->status = 'Will Start';
+        $match->result = 'Match has not started yet';
         $match->save();
     }
 }
