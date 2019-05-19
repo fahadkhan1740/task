@@ -62,6 +62,8 @@ class MatchProgressListener
         $this->isHomeMatch = false;
 
         $this->inning($awayTeam, $homeTeam);
+
+        $this->declareMatchResult();
     }
 
     /**
@@ -85,13 +87,15 @@ class MatchProgressListener
         $this->batsmanOffStrike = $this->homeTeamBatsmen[1];
 
         $this->currentBowler = $this->awayTeamBowlers[4];
+        $this->currentBowler->scorecard->bowling_overs++;
 
         // update scorecards every 5 seconds by firing events
 
         // one bowler | two batsmen: status => not out, rest_status => empty
 
         $probableRuns = [0, 1, 2, 3, 4, 6];
-        $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
+//        $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
+        $probableBalls = ['Bowled', 'Catch out', 'Delivery'];
 
         $totalBalls = env('OVERS') * 6;
 
@@ -315,6 +319,7 @@ class MatchProgressListener
         } else {
             $randomBowlerIndex = array_rand($this->awayTeamBowlers->toArray(), 1);
             $this->currentBowler = $this->awayTeamBowlers[$randomBowlerIndex];
+            $this->currentBowler->scorecard->bowling_overs++;
         }
     }
 
@@ -356,6 +361,19 @@ class MatchProgressListener
             }
 
             $this->match->away_team_run_rate = $this->match->away_team_runs / $this->match->away_team_overs;
+        }
+
+        $this->match->update();
+    }
+
+    private function declareMatchResult()
+    {
+        if ($this->match->home_team_runs > $this->match->away_team_runs) {
+            $title = $this->match->homeTeam->title;
+            $this->match->result = "$title won.";
+        } else {
+            $title = $this->match->awayTeam->title;
+            $this->match->result = "$title won.";
         }
 
         $this->match->update();

@@ -4,16 +4,21 @@ namespace App\Repositories;
 
 use App\Models\League;
 use App\Models\Match;
+use App\Models\Scorecard;
 
 class LeagueRepository
 {
+
     /**
      * Remove all the matches to generate a new league fixtures
-     * @return mixed
+     * @return bool
      */
     public function resetFixtures()
     {
-        return Match::truncate();
+        Match::truncate();
+        Scorecard::truncate();
+
+        return true;
     }
 
     /**

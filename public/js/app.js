@@ -1963,29 +1963,133 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ScorecardComponent",
   data: function data() {
     return {
-      batsmen: Array,
-      bowlers: Array,
-      noBalls: '',
-      wideBalls: ''
+      homeBatsmen: Array,
+      homeBowlers: Array,
+      homeNoBalls: '',
+      homeWideBalls: '',
+      awayBatsmen: Array,
+      awayBowlers: Array,
+      awayNoBalls: '',
+      awayWideBalls: ''
     };
   },
   mounted: function mounted() {
-    this.getScorecard(1);
+    this.getScorecard(2);
   },
   methods: {
     getScorecard: function getScorecard(matchId) {
       var _this = this;
 
       axios.get("api/scorecard/".concat(matchId)).then(function (res) {
-        _this.batsmen = res.data.batsmen;
-        _this.bowlers = res.data.bowlers;
-        _this.noBalls = res.data.extras.no_balls;
-        _this.wideBalls = res.data.extras.wide_balls;
-        console.log(_this.bowlers);
+        _this.homeBatsmen = res.data.home.home_batsmen;
+        _this.homeBowlers = res.data.home.home_bowlers;
+        _this.homeNoBalls = res.data.home.home_extras.no_balls;
+        _this.homeWideBalls = res.data.home.home_extras.wide_balls;
+        _this.awayBatsmen = res.data.away.away_batsmen;
+        console.log(res.data.away);
+        console.log(_this.awayBatsmen);
+        _this.awayBowlers = res.data.away.away_bowlers;
+        console.log(_this.awayBowlers);
+        _this.awayNoBalls = res.data.away.away_extras.no_balls;
+        _this.awayWideBalls = res.data.away.away_extras.wide_balls;
       })["catch"](function (error) {
         return console.error(error);
       });
@@ -47684,90 +47788,302 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h4", [_vm._v("Scorecard")]),
-    _vm._v(" "),
-    _c("table", { staticClass: "table table-sm" }, [
+    _c("div", { staticClass: "container" }, [
       _vm._m(0),
       _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.batsmen, function(batsman) {
-          return _c("tr", [
-            _c("th", { attrs: { scope: "row" } }),
+      _c("div", { staticClass: "tab-content" }, [
+        _c(
+          "div",
+          {
+            staticClass: "tab-pane fade in active",
+            attrs: { role: "tabpanel", id: "first" }
+          },
+          [
+            _c("table", { staticClass: "table table-sm" }, [
+              _vm._m(1),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.homeBatsmen, function(batsman) {
+                  return _c("tr", [
+                    _c("th", { attrs: { scope: "row" } }),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.player.name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.status))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_runs))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_balls))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_fours))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_sixes))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.strike_rate))])
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("tfoot", [
+                _c("tr", [
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("Extras")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(
+                      "NB: " +
+                        _vm._s(_vm.homeNoBalls) +
+                        ", W: " +
+                        _vm._s(_vm.homeWideBalls)
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.homeNoBalls + _vm.homeWideBalls))
+                  ]),
+                  _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td")
+                ]),
+                _vm._v(" "),
+                _vm._m(2)
+              ])
+            ]),
             _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.player.name))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.status))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.batting_runs))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.batting_balls))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.batting_fours))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.batting_sixes))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(batsman.strike_rate))])
-          ])
-        }),
-        0
-      ),
-      _vm._v(" "),
-      _c("tfoot", [
-        _c("tr", [
-          _c("td"),
-          _vm._v(" "),
-          _c("td", [_vm._v("Extras")]),
-          _vm._v(" "),
-          _c("td", [
-            _vm._v(
-              "NB: " + _vm._s(_vm.noBalls) + ", W: " + _vm._s(_vm.wideBalls)
-            )
-          ]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.noBalls + _vm.wideBalls))]),
-          _vm._v(" "),
-          _c("td"),
-          _vm._v(" "),
-          _c("td"),
-          _vm._v(" "),
-          _c("td"),
-          _vm._v(" "),
-          _c("td")
-        ]),
+            _c("table", { staticClass: "table table-sm" }, [
+              _vm._m(3),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.homeBowlers, function(bowler) {
+                  return _c("tr", [
+                    _c("th", { attrs: { scope: "row" } }),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.player.name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_overs))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_maiden))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_runs))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_wickets))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.economy))])
+                  ])
+                }),
+                0
+              )
+            ])
+          ]
+        ),
         _vm._v(" "),
-        _vm._m(1)
+        _c(
+          "div",
+          {
+            staticClass: "tab-pane fade",
+            attrs: { role: "tabpanel", id: "second" }
+          },
+          [
+            _c("table", { staticClass: "table table-sm" }, [
+              _vm._m(4),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.awayBatsmen, function(batsman) {
+                  return _c("tr", [
+                    _c("th", { attrs: { scope: "row" } }),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.player.name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.status))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_runs))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_balls))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_fours))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.batting_sixes))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(batsman.strike_rate))])
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("tfoot", [
+                _c("tr", [
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td", [_vm._v("Extras")]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(
+                      "NB: " +
+                        _vm._s(_vm.awayNoBalls) +
+                        ", W: " +
+                        _vm._s(_vm.awayWideBalls)
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.awayNoBalls + _vm.awayWideBalls))
+                  ]),
+                  _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
+                  _c("td")
+                ]),
+                _vm._v(" "),
+                _vm._m(5)
+              ])
+            ]),
+            _vm._v(" "),
+            _c("table", { staticClass: "table table-sm" }, [
+              _vm._m(6),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.awayBowlers, function(bowler) {
+                  return _c("tr", [
+                    _c("th", { attrs: { scope: "row" } }),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.player.name))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_overs))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_maiden))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_runs))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.bowling_wickets))]),
+                    _vm._v(" "),
+                    _c("td", [_vm._v(_vm._s(bowler.economy))])
+                  ])
+                }),
+                0
+              )
+            ])
+          ]
+        )
       ])
     ]),
     _vm._v(" "),
-    _c("table", { staticClass: "table table-sm" }, [
-      _vm._m(2),
-      _vm._v(" "),
-      _c(
-        "tbody",
-        _vm._l(_vm.bowlers, function(bowler) {
-          return _c("tr", [
-            _c("th", { attrs: { scope: "row" } }),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(bowler.player.name))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(bowler.bowling_overs))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(bowler.bowling_maiden))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(bowler.bowling_runs))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(bowler.bowling_wickets))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(bowler.economy))])
-          ])
-        }),
-        0
-      )
-    ])
+    _c("h4", [_vm._v("Scorecard")])
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "ul",
+      { staticClass: "nav nav-tabs", attrs: { role: "tablist" } },
+      [
+        _c("li", { staticClass: "nav-item" }, [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link active",
+              attrs: { href: "#first", role: "tab", "data-toggle": "tab" }
+            },
+            [_vm._v("1st Innings")]
+          )
+        ]),
+        _vm._v(" "),
+        _c("li", { staticClass: "nav-item" }, [
+          _c(
+            "a",
+            {
+              staticClass: "nav-link",
+              attrs: { href: "#second", role: "tab", "data-toggle": "tab" }
+            },
+            [_vm._v("2nd Innings")]
+          )
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Batsman")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Status")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("R")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("B")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("4s")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("6s")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("S/R")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("td"),
+      _vm._v(" "),
+      _c("td", [_vm._v("Total")]),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Bowler")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("O")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("M")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("R")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("W")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("E/R")])
+      ])
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
