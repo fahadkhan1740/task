@@ -11,7 +11,7 @@
                 <a class="nav-link" href="#matches" role="tab" data-toggle="tab">Matches</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#references" role="tab" data-toggle="tab">references</a>
+                <a class="nav-link" href="#references" role="tab" data-toggle="tab">Scorecards</a>
             </li>
         </ul>
 

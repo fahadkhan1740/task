@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\MatchStartedEvent;
+use App\Models\Match;
 use App\Models\Team;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,6 +17,11 @@ class MatchProgressListener
     private $isDelivery;
     private $homeTeamBatsmen;
     private $awayTeamBowlers;
+    private $battingTeam;
+    private $bowlingTeam;
+    private $match;
+    private $doUpdateOver;
+    private $over;
 
     /**
      * Create the event listener.
@@ -35,10 +41,20 @@ class MatchProgressListener
      */
     public function handle(MatchStartedEvent $event)
     {
-        $homeTeam = Team::with('players.scorecard')->with('league')->find($event->match->home_team_id);
-        $awayTeam = Team::with('players.scorecard')->with('league')->find($event->match->away_team_id);
-        // teams have players
-        // players have scorecard
+        $this->match = Match::find($event->match->id);
+
+        $homeTeam = Team::with('players.scorecard')
+                    ->with('league')
+                    ->with('league.matches')
+                    ->find($event->match->home_team_id);
+
+        $awayTeam = Team::with('players.scorecard')
+                    ->with('league')
+                    ->with('league.matches')
+                    ->find($event->match->away_team_id);
+
+        $this->battingTeam = $homeTeam;
+        $this->bowlingTeam = $awayTeam;
 
         $this->homeTeamBatsmen = $homeTeam->players->filter(function ($player) {
             return $player->type === 'batsmen';
@@ -63,22 +79,17 @@ class MatchProgressListener
 
         // update scorecards every 5 seconds by firing events
 
-        // over 20 | 6 balls
         // one bowler | two batsmen: status => not out, rest_status => empty
-        // next over new bowler same batsmen
-        // runs 1,2,3,4,6
-        // out bowled, catch | Extras: wide balls, no ball
 
         $probableRuns = [0, 1, 2, 3, 4, 6];
         $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
 
-        // Loop through balls
         $totalBalls = env('OVERS') * 6;
 
-        for ($over = 0; $over < env('OVERS'); $over++) {
+        for ($this->over = 0; $this->over < env('OVERS'); $this->over++) {
+            $this->doUpdateOver = false;
+
             for ($ball = 0; $ball < 6;) {
-                Log::debug('ball count');
-                Log::debug($ball);
                 $this->isDelivery = false;
 
                 $balled = array_rand($probableBalls, 1);
@@ -90,10 +101,12 @@ class MatchProgressListener
                 }
                 // update team score
                 // update batsmen runs, balls, strike_rate | Complete
-                // update bowler runs, overs, economy
+                // update bowler runs, overs, economy | Partially Complete
 
             }
-            $this->updateBowler($over);
+
+            $this->doUpdateOver = true;
+            $this->updateBowler($this->over);
         }
     }
 
@@ -222,6 +235,8 @@ class MatchProgressListener
         } else {
             $this->updateBowlerRunsForNonDelivery($runs, $type);
         }
+
+        $this->updateTeamRuns($runs, $type);
     }
 
     /**
@@ -273,7 +288,7 @@ class MatchProgressListener
      */
     private function updateBowlerRunsForValidDelivery($runs): void
     {
-// TODO:: calculate bowling overs
+        // TODO:: calculate bowling overs
         $this->currentBowler->scorecard->bowling_runs += $runs;
 
         if ($runs === 4) {
@@ -292,8 +307,23 @@ class MatchProgressListener
         if ($over % 4 === 0) {
             $this->currentBowler = $this->awayTeamBowlers[4];
         } else {
-            $this->currentBowler = $this->awayTeamBowlers[mt_rand(4,8)];
+            $randomBowlerIndex = array_rand($this->awayTeamBowlers->toArray(), 1);
+            $this->currentBowler = $this->awayTeamBowlers[$randomBowlerIndex];
+        }
+    }
+
+    private function updateTeamRuns($runs, string $type)
+    {
+        $this->match->home_team_runs += $runs;
+
+        if ($this->over === 0) {
+            $this->match->home_team_overs = 1;
+        } else {
+            $this->match->home_team_overs = $this->over;
         }
 
+        $this->match->home_team_run_rate = $this->match->home_team_runs / $this->match->home_team_overs;
+
+        $this->match->update();
     }
 }
