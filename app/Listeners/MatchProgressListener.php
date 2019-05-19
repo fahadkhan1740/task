@@ -22,7 +22,7 @@ class MatchProgressListener
     /**
      * Handle the event.
      *
-     * @param  MatchStartedEvent  $event
+     * @param MatchStartedEvent $event
      * @return void
      */
     public function handle(MatchStartedEvent $event)
@@ -39,8 +39,9 @@ class MatchProgressListener
         // runs 1,2,3,4,6
         // out bowled, catch | Extras: wide balls, no ball
 
-        $probableRuns = [0,1,2,3,4,6];
+        $probableRuns = [0, 1, 2, 3, 4, 6];
         $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
+
         // Loop through balls
         $totalBalls = env('OVERS') * 6;
 
@@ -48,10 +49,10 @@ class MatchProgressListener
             for ($j = 1; $j = 6;) {
                 $ball = array_rand($probableBalls, 1);
 
-                if ($probableBalls[$ball] !== 'Delivery') {
-                    if ($probableBalls[$ball] === 'No Ball' || $probableBalls[$ball] === 'Wide Ball') {
+                if ($this->isNotDelivery($probableBalls, $ball)) {
+                    if ($this->isNoOrWideBall($probableBalls, $ball)) {
                         $probableRuns = 1;
-                        if ($probableBalls[$ball] === 'No Ball') {
+                        if ($this->isNoBall($probableBalls, $ball)) {
                             // updated bowler "No balls"
                         } else {
                             // update bowler "Wide balls"
@@ -67,19 +68,59 @@ class MatchProgressListener
                     $run = array_rand($probableRuns, 1);
 
                     if ($probableRuns[$run] !== 0) {
-                        if ($probableRuns[$run] % 2 !== 0) {
+                        if ($this->isOdd($probableRuns, $run)) {
                             // switch batsmen
                         }
                     }
 
-                    // update team score
-                    // update batsmen runs, balls, strike_rate
-                    // update bowler runs, overs, economy
-
                     $j++;
                 }
 
+                // update team score
+                // update batsmen runs, balls, strike_rate
+                // update bowler runs, overs, economy
+
             }
         }
+    }
+
+    /**
+     * @param array $probableBalls
+     * @param $ball
+     * @return bool
+     */
+    private function isNoOrWideBall(array $probableBalls, $ball): bool
+    {
+        return $this->isNoBall($probableBalls, $ball) || $probableBalls[$ball] === 'Wide Ball';
+    }
+
+    /**
+     * @param array $probableBalls
+     * @param $ball
+     * @return bool
+     */
+    private function isNotDelivery(array $probableBalls, $ball): bool
+    {
+        return $probableBalls[$ball] !== 'Delivery';
+    }
+
+    /**
+     * @param array $probableBalls
+     * @param $ball
+     * @return bool
+     */
+    private function isNoBall(array $probableBalls, $ball): bool
+    {
+        return $probableBalls[$ball] === 'No Ball';
+    }
+
+    /**
+     * @param $probableRuns
+     * @param $run
+     * @return bool
+     */
+    private function isOdd($probableRuns, $run): bool
+    {
+        return $probableRuns[$run] % 2 !== 0;
     }
 }
