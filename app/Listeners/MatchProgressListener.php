@@ -22,6 +22,7 @@ class MatchProgressListener
     private $batsmanOnStrike;
     private $batsmanOffStrike;
     private $awayTeamBowlers;
+    private $isHomeMatch;
 
     /**
      * Create the event listener.
@@ -53,18 +54,26 @@ class MatchProgressListener
                     ->with('league.matches')
                     ->find($event->match->away_team_id);
 
+
+        $this->isHomeMatch = true;
+
+        $this->inning($homeTeam, $awayTeam);
+
+        $this->isHomeMatch = false;
+
+        $this->inning($awayTeam, $homeTeam);
+    }
+
+    /**
+     * @param $homeTeam
+     * @param $awayTeam
+     */
+    private function inning($homeTeam, $awayTeam): void
+    {
         $this->battingTeam = $homeTeam;
         $this->bowlingTeam = $awayTeam;
 
         $this->homeTeamBatsmen = $homeTeam->players->filter(function ($player) {
-            return $player->type === 'batsmen';
-        });
-
-        $homeTeamBowlers = $homeTeam->players->filter(function ($player) {
-            return $player->type === 'bowler';
-        });
-
-        $awayTeamBatsmen = $awayTeam->players->filter(function ($player) {
             return $player->type === 'batsmen';
         });
 
@@ -82,8 +91,7 @@ class MatchProgressListener
         // one bowler | two batsmen: status => not out, rest_status => empty
 
         $probableRuns = [0, 1, 2, 3, 4, 6];
-//        $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
-        $probableBalls = ['Bowled', 'Catch out', 'Delivery'];
+        $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
 
         $totalBalls = env('OVERS') * 6;
 
@@ -100,10 +108,6 @@ class MatchProgressListener
                 if ($this->isDelivery) {
                     $ball++;
                 }
-                // update team score
-                // update batsmen runs, balls, strike_rate | Complete
-                // update bowler runs, overs, economy | Partially Complete
-
             }
 
             $this->doUpdateOver = true;
@@ -317,23 +321,45 @@ class MatchProgressListener
     private function updateTeamRuns($runs, string $type)
     {
         Log::debug($this->over);
-        if ($this->over === env('OVERS')) {
-            return;
-        }
 
-        if ($runs > 0) {
-            $this->match->home_team_runs += $runs;
-            \Log::info("Runs". $runs ." Home team runs ". $this->match->home_team_runs);
-        }
+        if ($this->isHomeMatch) {
+            if ($this->over === env('OVERS')) {
+                return;
+            }
 
-        if ($this->over === 0) {
-            $this->match->home_team_overs = 1;
+            if ($runs > 0) {
+                $this->match->home_team_runs += $runs;
+                \Log::info("Runs". $runs ." Home team runs ". $this->match->home_team_runs);
+            }
+
+            if ($this->over === 0) {
+                $this->match->home_team_overs = 1;
+            } else {
+                $this->match->home_team_overs = $this->over;
+            }
+
+            $this->match->home_team_run_rate = $this->match->home_team_runs / $this->match->home_team_overs;
         } else {
-            $this->match->home_team_overs = $this->over;
-        }
+            if ($this->over === env('OVERS')) {
+                return;
+            }
 
-        $this->match->home_team_run_rate = $this->match->home_team_runs / $this->match->home_team_overs;
+            if ($runs > 0) {
+                $this->match->away_team_runs += $runs;
+                \Log::info("Runs". $runs ." Home team runs ". $this->match->away_team_runs);
+            }
+
+            if ($this->over === 0) {
+                $this->match->away_team_overs = 1;
+            } else {
+                $this->match->away_team_overs = $this->over;
+            }
+
+            $this->match->away_team_run_rate = $this->match->away_team_runs / $this->match->away_team_overs;
+        }
 
         $this->match->update();
     }
+
+
 }
