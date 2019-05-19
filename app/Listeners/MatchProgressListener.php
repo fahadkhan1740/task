@@ -317,7 +317,7 @@ class MatchProgressListener
     private function updateTeamRuns($runs, string $type)
     {
         Log::debug($this->over);
-        if ($this->over === env('OVERS') - 1) {
+        if ($this->over === env('OVERS')) {
             return;
         }
 

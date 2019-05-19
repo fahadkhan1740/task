@@ -1974,7 +1974,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getScorecard(2);
+    this.getScorecard(1);
   },
   methods: {
     getScorecard: function getScorecard(matchId) {

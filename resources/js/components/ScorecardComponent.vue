@@ -88,7 +88,7 @@
             }
         },
         mounted() {
-            this.getScorecard(2);
+            this.getScorecard(1);
         },
         methods: {
             getScorecard(matchId) {
