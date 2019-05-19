@@ -18,3 +18,8 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('rest', function () {
+    $team = \App\Models\Team::with('players')->first();
+    return $team;
+});
