@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Events\MatchStartedEvent;
+use App\Listeners\MatchProgressListener;
 use App\Listeners\UpdateLeagueStanding;
 use App\Listeners\UpdateLeagueStandingListener;
 use Illuminate\Support\Facades\Event;
@@ -22,7 +23,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         MatchStartedEvent::class => [
-            UpdateLeagueStandingListener::class
+            UpdateLeagueStandingListener::class,
+            MatchProgressListener::class
         ]
     ];
 

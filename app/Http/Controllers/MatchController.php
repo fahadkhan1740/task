@@ -47,9 +47,8 @@ class MatchController extends Controller
 
         // Increment League table with matches played || Event: Match started
         // 1 - Listener: increase matches played
-        event(new MatchStartedEvent($match));
-
         // 2 - Listener: starts the game
+        event(new MatchStartedEvent($match));
 
         return response('Match started successfully', 200);
     }
