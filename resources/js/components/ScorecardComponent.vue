@@ -26,6 +26,27 @@
                 <td>{{ batsman.strike_rate }}</td>
             </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>Extras</td>
+                    <td>NB: {{ noBalls }}, W: {{ wideBalls }}</td>
+                    <td>{{ noBalls + wideBalls }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
         </table>
 
         <table class="table table-sm">
@@ -61,34 +82,21 @@
         data() {
             return {
                 batsmen: Array,
-                bowlers: Array
+                bowlers: Array,
+                noBalls: '',
+                wideBalls: ''
             }
         },
         mounted() {
-            this.getScorecard(1);
+            this.getScorecard(2);
         },
         methods: {
             getScorecard(matchId) {
                 axios.get(`api/scorecard/${matchId}`).then(res => {
-                    let homeTeamId = res.data[0].player.team_id;
-                    let awayTeamId = res.data[res.data.length - 1].player.team_id;
-
-                    console.warn(homeTeamId)
-                    console.warn(awayTeamId)
-
-                    this.batsmen = res.data.filter(item => {
-                        if (item.player.type === 'batsmen' && item.player.team_id === homeTeamId) {
-                            return item
-                        }
-                    })
-
-                    this.bowlers = res.data.filter(item => {
-                        console.log(item)
-                        if (item.player.type === 'bowler' && item.player.team === awayTeamId) {
-                            return item
-                        }
-                    })
-
+                    this.batsmen = res.data.batsmen
+                    this.bowlers = res.data.bowlers
+                    this.noBalls = res.data.extras.no_balls
+                    this.wideBalls = res.data.extras.wide_balls
                     console.log(this.bowlers)
                 }).catch(error => console.error(error))
             }

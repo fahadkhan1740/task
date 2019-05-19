@@ -18,12 +18,12 @@
                         <tbody>
                             <tr>
                                 <td>{{ match.home_team.title }}</td>
-                                <td>{{ match.home_team_runs }}/{{ match.home_team_wickets }} ({{ match.home_team_overs }})</td>
+                                <td>{{ match.home_team_runs }}/{{ match.home_team_wickets }} ({{ match.home_team_overs > 0 ? match.home_team_overs + 1  : 0 }})</td>
                                 <td>{{ match.home_team_run_rate }}</td>
                             </tr>
                             <tr>
                                 <td>{{ match.away_team.title }}</td>
-                                <td>{{ match.away_team_runs }}/{{ match.away_team_wickets }} ({{ match.away_team_overs }})</td>
+                                <td>{{ match.away_team_runs }}/{{ match.away_team_wickets }} ({{ match.away_team_overs > 0 ? match.away_team_overs + 1 : 0}})</td>
                                 <td>{{ match.away_team_run_rate }}</td>
                             </tr>
                         </tbody>

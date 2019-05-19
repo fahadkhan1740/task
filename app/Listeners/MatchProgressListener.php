@@ -11,17 +11,17 @@ use Illuminate\Support\Facades\Log;
 
 class MatchProgressListener
 {
-    private $batsmanOnStrike;
-    private $batsmanOffStrike;
-    private $currentBowler;
+    private $over;
+    private $match;
     private $isDelivery;
-    private $homeTeamBatsmen;
-    private $awayTeamBowlers;
     private $battingTeam;
     private $bowlingTeam;
-    private $match;
     private $doUpdateOver;
-    private $over;
+    private $currentBowler;
+    private $homeTeamBatsmen;
+    private $batsmanOnStrike;
+    private $batsmanOffStrike;
+    private $awayTeamBowlers;
 
     /**
      * Create the event listener.
@@ -82,7 +82,8 @@ class MatchProgressListener
         // one bowler | two batsmen: status => not out, rest_status => empty
 
         $probableRuns = [0, 1, 2, 3, 4, 6];
-        $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
+//        $probableBalls = ['No Ball', 'Wide Ball', 'Bowled', 'Catch out', 'Delivery'];
+        $probableBalls = ['Bowled', 'Catch out', 'Delivery'];
 
         $totalBalls = env('OVERS') * 6;
 
@@ -244,6 +245,7 @@ class MatchProgressListener
      */
     private function updateBatsmanScorecard($runs): void
     {
+        Log::debug('batting runs '. $runs);
         $this->batsmanOnStrike->scorecard->batting_runs += $runs;
         $this->batsmanOnStrike->scorecard->batting_balls++;
 
@@ -314,7 +316,15 @@ class MatchProgressListener
 
     private function updateTeamRuns($runs, string $type)
     {
-        $this->match->home_team_runs += $runs;
+        Log::debug($this->over);
+        if ($this->over === env('OVERS') - 1) {
+            return;
+        }
+
+        if ($runs > 0) {
+            $this->match->home_team_runs += $runs;
+            \Log::info("Runs". $runs ." Home team runs ". $this->match->home_team_runs);
+        }
 
         if ($this->over === 0) {
             $this->match->home_team_overs = 1;

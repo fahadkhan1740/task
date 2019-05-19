@@ -1942,38 +1942,49 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ScorecardComponent",
   data: function data() {
     return {
       batsmen: Array,
-      bowlers: Array
+      bowlers: Array,
+      noBalls: '',
+      wideBalls: ''
     };
   },
   mounted: function mounted() {
-    this.getScorecard(1);
+    this.getScorecard(2);
   },
   methods: {
     getScorecard: function getScorecard(matchId) {
       var _this = this;
 
       axios.get("api/scorecard/".concat(matchId)).then(function (res) {
-        var homeTeamId = res.data[0].player.team_id;
-        var awayTeamId = res.data[res.data.length - 1].player.team_id;
-        console.warn(homeTeamId);
-        console.warn(awayTeamId);
-        _this.batsmen = res.data.filter(function (item) {
-          if (item.player.type === 'batsmen' && item.player.team_id === homeTeamId) {
-            return item;
-          }
-        });
-        _this.bowlers = res.data.filter(function (item) {
-          console.log(item);
-
-          if (item.player.type === 'bowler' && item.player.team === awayTeamId) {
-            return item;
-          }
-        });
+        _this.batsmen = res.data.batsmen;
+        _this.bowlers = res.data.bowlers;
+        _this.noBalls = res.data.extras.no_balls;
+        _this.wideBalls = res.data.extras.wide_balls;
         console.log(_this.bowlers);
       })["catch"](function (error) {
         return console.error(error);
@@ -47586,7 +47597,11 @@ var render = function() {
                           "/" +
                           _vm._s(match.home_team_wickets) +
                           " (" +
-                          _vm._s(match.home_team_overs) +
+                          _vm._s(
+                            match.home_team_overs > 0
+                              ? match.home_team_overs + 1
+                              : 0
+                          ) +
                           ")"
                       )
                     ]),
@@ -47603,7 +47618,11 @@ var render = function() {
                           "/" +
                           _vm._s(match.away_team_wickets) +
                           " (" +
-                          _vm._s(match.away_team_overs) +
+                          _vm._s(
+                            match.away_team_overs > 0
+                              ? match.away_team_overs + 1
+                              : 0
+                          ) +
                           ")"
                       )
                     ]),
@@ -47692,11 +47711,37 @@ var render = function() {
           ])
         }),
         0
-      )
+      ),
+      _vm._v(" "),
+      _c("tfoot", [
+        _c("tr", [
+          _c("td"),
+          _vm._v(" "),
+          _c("td", [_vm._v("Extras")]),
+          _vm._v(" "),
+          _c("td", [
+            _vm._v(
+              "NB: " + _vm._s(_vm.noBalls) + ", W: " + _vm._s(_vm.wideBalls)
+            )
+          ]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.noBalls + _vm.wideBalls))]),
+          _vm._v(" "),
+          _c("td"),
+          _vm._v(" "),
+          _c("td"),
+          _vm._v(" "),
+          _c("td"),
+          _vm._v(" "),
+          _c("td")
+        ]),
+        _vm._v(" "),
+        _vm._m(1)
+      ])
     ]),
     _vm._v(" "),
     _c("table", { staticClass: "table table-sm" }, [
-      _vm._m(1),
+      _vm._m(2),
       _vm._v(" "),
       _c(
         "tbody",
@@ -47745,6 +47790,26 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("S/R")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("tr", [
+      _c("td"),
+      _vm._v(" "),
+      _c("td", [_vm._v("Total")]),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td"),
+      _vm._v(" "),
+      _c("td")
     ])
   },
   function() {
