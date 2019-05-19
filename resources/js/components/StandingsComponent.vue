@@ -10,7 +10,6 @@
                 <th scope="col">W</th>
                 <th scope="col">L</th>
                 <th scope="col">Points</th>
-                <th scope="col">Form</th>
             </tr>
             </thead>
             <tbody>
@@ -21,7 +20,6 @@
                 <td>{{ standing.wins }}</td>
                 <td>{{ standing.lose }}</td>
                 <td>{{ standing.points }}</td>
-                <td>{{ standing.form }}</td>
             </tr>
             </tbody>
         </table>

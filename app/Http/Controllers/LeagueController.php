@@ -31,7 +31,7 @@ class LeagueController extends Controller
      */
     public function index()
     {
-        return League::with('team')->get();
+        return League::with('team')->orderBy('points', 'DESC')->get();
     }
 
     /**

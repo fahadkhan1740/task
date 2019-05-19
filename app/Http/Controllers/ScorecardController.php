@@ -20,13 +20,18 @@ class ScorecardController extends Controller
         $this->scorecardRepository = $scorecardRepository;
     }
 
+    public function index()
+    {
+        return view('scorecard');
+    }
+
     /**
      * @param $matchId
      * @return ResponseFactory|Response
      */
-    public function getScorecard($matchId)
+    public function getScorecard()
     {
-        $scorecards = Scorecard::with('player')->where('match_id', $matchId)->get();
+        $scorecards = Scorecard::with('player')->where('match_id', request()->matchId)->get();
 
         $homeTeamId = $scorecards[0]->player->team_id;
         $awayTeamId = $scorecards[$scorecards->count() - 1]->player->team_id;
@@ -45,25 +50,24 @@ class ScorecardController extends Controller
         $awayWideBalls = 0;
         list($awayNoBalls, $awayWideBalls) = $this->countExtras($awayBowlers, $awayNoBalls, $awayWideBalls);
 
-        return response(
-            [
-                'home' => [
-                    'home_batsmen' => $homeBatsmen,
-                    'home_bowlers' => $homeBowlers,
-                    'home_extras' => [
-                        'no_balls' => $homeNoBalls,
-                        'wide_balls' => $homeWideBalls
-                    ]
-                ],
-                'away' => [
-                    'away_batsmen' => $awayBatsmen,
-                    'away_bowlers' => $awayBowlers,
-                    'away_extras' => [
-                        'no_balls' => $awayNoBalls,
-                        'wide_balls' => $awayWideBalls
-                    ]
+        return \response([
+            'home' => [
+                'home_batsmen' => $homeBatsmen,
+                'home_bowlers' => $homeBowlers,
+                'home_extras' => [
+                    'no_balls' => $homeNoBalls,
+                    'wide_balls' => $homeWideBalls
                 ]
-            ], 200);
+            ],
+            'away' => [
+                'away_batsmen' => $awayBatsmen,
+                'away_bowlers' => $awayBowlers,
+                'away_extras' => [
+                    'no_balls' => $awayNoBalls,
+                    'wide_balls' => $awayWideBalls
+                ]
+            ]
+        ], 200);
     }
 
     /**

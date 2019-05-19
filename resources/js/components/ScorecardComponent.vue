@@ -164,15 +164,18 @@
             </div>
         </div>
 
-
-        <h4>Scorecard</h4>
-
     </div>
 </template>
 
 <script>
     export default {
         name: "ScorecardComponent",
+        props: {
+            matchId: {
+                type: Number,
+                default: 1
+            }
+        },
         data() {
             return {
                 homeBatsmen: Array,
@@ -186,11 +189,11 @@
             }
         },
         mounted() {
-            this.getScorecard(2);
+            this.getScorecard(this.matchId);
         },
         methods: {
             getScorecard(matchId) {
-                axios.get(`api/scorecard/${matchId}`).then(res => {
+                axios.get(`/scorecard?matchId=${matchId}`).then(res => {
                     this.homeBatsmen = res.data.home.home_batsmen
                     this.homeBowlers = res.data.home.home_bowlers
                     this.homeNoBalls = res.data.home.home_extras.no_balls

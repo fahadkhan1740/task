@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Broadcasting\MatchComplete;
 use App\Events\MatchStartedEvent;
+use App\Models\League;
 use App\Models\Match;
 use App\Models\Team;
 use Illuminate\Queue\InteractsWithQueue;
@@ -287,7 +289,6 @@ class MatchProgressListener
      */
     private function updateBowlerRunsForValidDelivery($runs): void
     {
-        // TODO:: calculate bowling overs
         $this->currentBowler->scorecard->bowling_runs += $runs;
 
         if ($runs === 4) {
@@ -370,12 +371,40 @@ class MatchProgressListener
         if ($this->match->home_team_runs > $this->match->away_team_runs) {
             $title = $this->match->homeTeam->title;
             $this->match->result = "$title won.";
+            $this->updateHomeLeagueStandings();
         } else {
             $title = $this->match->awayTeam->title;
             $this->match->result = "$title won.";
+            $this->updateAwayLeagueStandings();
         }
 
         $this->match->update();
+
+        broadcast(new MatchComplete());
+    }
+
+    private function updateHomeLeagueStandings(): void
+    {
+        $league = League::where('team_id', $this->match->home_team_id)->first();
+        $league->wins += 1;
+        $league->points += 3;
+        $league->update();
+
+        $league = League::where('team_id', $this->match->away_team_id)->first();
+        $league->lose += 1;
+        $league->update();
+    }
+
+    private function updateAwayLeagueStandings(): void
+    {
+        $league = League::where('team_id', $this->match->away_team_id)->first();
+        $league->wins += 1;
+        $league->points += 3;
+        $league->update();
+
+        $league = League::where('team_id', $this->match->home_team_id)->first();
+        $league->lose += 1;
+        $league->update();
     }
 
 

@@ -1837,6 +1837,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "MatchesComponent",
   data: function data() {
@@ -1867,9 +1880,16 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     startMatch: function startMatch(matchId) {
+      var _this3 = this;
+
       axios.get("api/match/create?match_id=".concat(matchId)).then(function (res) {
-        return console.log(res);
+        setTimeout(function () {
+          _this3.getAllMatches();
+        }, 5);
       }).error(console.error(error));
+    },
+    showScore: function showScore(id) {
+      window.open("scorecard/index?matchId=".concat(id), '_blank');
     }
   }
 });
@@ -2054,11 +2074,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "ScorecardComponent",
+  props: {
+    matchId: {
+      type: Number,
+      "default": 1
+    }
+  },
   data: function data() {
     return {
       homeBatsmen: Array,
@@ -2072,13 +2095,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getScorecard(2);
+    this.getScorecard(this.matchId);
   },
   methods: {
     getScorecard: function getScorecard(matchId) {
       var _this = this;
 
-      axios.get("api/scorecard/".concat(matchId)).then(function (res) {
+      axios.get("/scorecard?matchId=".concat(matchId)).then(function (res) {
         _this.homeBatsmen = res.data.home.home_batsmen;
         _this.homeBowlers = res.data.home.home_bowlers;
         _this.homeNoBalls = res.data.home.home_extras.no_balls;
@@ -2108,8 +2131,6 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
 //
 //
 //
@@ -47663,7 +47684,8 @@ var render = function() {
     { staticClass: "container" },
     [
       _c("div", { staticClass: "row" }, [
-        _c("h5", { staticClass: "pull-left" }, [_vm._v("Matches component")]),
+        _c("h5", { staticClass: "pull-left" }, [_vm._v("Matches")]),
+        _c("br"),
         _vm._v(" "),
         _c(
           "button",
@@ -47674,23 +47696,13 @@ var render = function() {
       _vm._v(" "),
       _vm._l(_vm.matches, function(match) {
         return _c("div", { staticClass: "container" }, [
-          _c("div", { staticClass: "col-md-12" }, [
-            _c("div", { staticClass: "col-md-3" }, [
-              _vm._v("\n                " + _vm._s(match.started_at) + " "),
-              _c("br"),
-              _vm._v(
-                "\n                " + _vm._s(match.ended_at) + "\n            "
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-2" }, [
-              _vm._v(
-                "\n                " + _vm._s(match.status) + "\n            "
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-4 pull-right" }, [
-              _c("table", { staticClass: "table table-sm table-bordered" }, [
+          _c(
+            "div",
+            { staticClass: "col-md-12", staticStyle: { margin: "10px" } },
+            [
+              _c("table", { staticClass: "table-bordered" }, [
+                _vm._m(0, true),
+                _vm._v(" "),
                 _c("tbody", [
                   _c("tr", [
                     _c("td", [_vm._v(_vm._s(match.home_team.title))]),
@@ -47706,11 +47718,25 @@ var render = function() {
                               ? match.home_team_overs + 1
                               : 0
                           ) +
-                          ")"
+                          ")\n                    "
                       )
                     ]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(match.home_team_run_rate))])
+                    _c("td", [_vm._v(_vm._s(match.home_team_run_rate))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.showScore(match.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Show")]
+                      )
+                    ])
                   ]),
                   _vm._v(" "),
                   _c("tr", [
@@ -47727,45 +47753,83 @@ var render = function() {
                               ? match.away_team_overs + 1
                               : 0
                           ) +
-                          ")"
+                          ")\n                    "
                       )
                     ]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(match.away_team_run_rate))])
+                    _c("td", [_vm._v(_vm._s(match.away_team_run_rate))]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          on: {
+                            click: function($event) {
+                              return _vm.showScore(match.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Show")]
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("tr", [
+                    _c("td", [_vm._v("Result:")]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _vm._v(
+                        _vm._s(
+                          match.result ? match.result : "Match has not started"
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("td"),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-warning",
+                          on: {
+                            click: function($event) {
+                              return _vm.startMatch(match.id)
+                            }
+                          }
+                        },
+                        [_vm._v("Start Match")]
+                      )
+                    ])
                   ])
                 ])
               ])
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "col-md-3" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-warning",
-                  on: {
-                    click: function($event) {
-                      return _vm.startMatch(match.id)
-                    }
-                  }
-                },
-                [_vm._v("Start Match")]
-              )
-            ]),
-            _vm._v(" "),
-            _c("p", [
-              _vm._v(
-                "Result: " +
-                  _vm._s(match.result ? match.result : "Match has not started")
-              )
-            ])
-          ])
+            ]
+          )
         ])
       })
     ],
     2
   )
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("td", [_vm._v("Teams")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Score")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Run Rate")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Scorecard")])
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -47980,9 +48044,7 @@ var render = function() {
           ]
         )
       ])
-    ]),
-    _vm._v(" "),
-    _c("h4", [_vm._v("Scorecard")])
+    ])
   ])
 }
 var staticRenderFns = [
@@ -48194,9 +48256,7 @@ var render = function() {
             _vm._v(" "),
             _c("td", [_vm._v(_vm._s(standing.lose))]),
             _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(standing.points))]),
-            _vm._v(" "),
-            _c("td", [_vm._v(_vm._s(standing.form))])
+            _c("td", [_vm._v(_vm._s(standing.points))])
           ])
         }),
         0
@@ -48221,9 +48281,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("L")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Points")]),
-        _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Form")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Points")])
       ])
     ])
   }

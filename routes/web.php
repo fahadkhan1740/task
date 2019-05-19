@@ -25,3 +25,6 @@ Route::get('rest', function () {
 });
 
 Route::get('league', 'LeagueController@create');
+
+Route::get('scorecard', 'ScorecardController@getScorecard');
+Route::get('scorecard/index', 'ScorecardController@index');
