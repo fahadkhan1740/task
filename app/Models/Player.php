@@ -10,4 +10,9 @@ class Player extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function scorecard()
+    {
+        return $this->hasOne(Scorecard::class);
+    }
 }

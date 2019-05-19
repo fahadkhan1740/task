@@ -6,5 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Match extends Model
 {
-    //
+    public function league()
+    {
+        return $this->belongsToMany(League::class);
+    }
+
+    public function scorecard()
+    {
+        return $this->hasMany(Scorecard::class);
+    }
 }
